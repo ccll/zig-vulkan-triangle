@@ -6,7 +6,7 @@ pub fn build(b: *Builder) !void {
     const mode = b.standardReleaseOptions();
     const exe = b.addExecutable("zig-vulkan-triangle", "src/main.zig");
     exe.setBuildMode(mode);
-    exe.linkSystemLibrary("glfw");
+    exe.linkSystemLibrary("glfw3");
     exe.linkSystemLibrary("vulkan");
     exe.linkSystemLibrary("c");
 
