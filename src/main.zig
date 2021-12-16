@@ -843,6 +843,18 @@ fn querySwapChainSupport(allocator: *Allocator, device: c.VkPhysicalDevice) !Swa
     return details;
 }
 
+pub fn CStrHashContext() type {
+    return struct {
+        pub fn hash(ctx: @This(), key: [*:0]const u8) u64 {
+            return hash_cstr(key);
+        }
+
+        pub fn eql(ctx: @This(), a: [*:0]const u8, b: [*:0]const u8) bool {
+            return eql_cstr(a, b);
+        }
+    };
+}
+
 fn checkDeviceExtensionSupport(allocator: *Allocator, device: c.VkPhysicalDevice) !bool {
     var extensionCount: u32 = undefined;
     try checkSuccess(c.vkEnumerateDeviceExtensionProperties(device, null, &extensionCount, null));
@@ -854,8 +866,7 @@ fn checkDeviceExtensionSupport(allocator: *Allocator, device: c.VkPhysicalDevice
     const CStrHashMap = std.HashMap(
         [*:0]const u8,
         void,
-        hash_cstr,
-        eql_cstr,
+        CStrHashContext(),
         std.hash_map.DefaultMaxLoadPercentage,
     );
     var requiredExtensions = CStrHashMap.init(allocator);
